@@ -75,42 +75,41 @@ def questionOne():
     raceCounts = {}
     unarmedRaceCounts = {}
 
-# List of expected races to filter valid data
+    # Only the list of races which is in the data stored in an array which is also the x-axis of our visualization
     validRaces = ['W', 'B', 'A', 'H', 'O', 'N']
 
-# Open the CSV file and process it
+
     with open('fatal-police-shootings-data.csv', 'r') as file:
         reader = csv.DictReader(file)
     
         for row in reader:
-            race = row['race'].strip()  # Strip any whitespace
+            race = row['race'].strip()  
             armedStatus = row['armed_with']
         
-        # Filter only valid race values
             if race in validRaces:
-            # Count total occurrences of each race
+            # Total Occurences for all the races including armed and non armed data.
                 if race in raceCounts:
                     raceCounts[race] += 1
                 else:
                     raceCounts[race] = 1
             
-            # Count unarmed occurrences of each race
+            # Now if the person of that race was unarmed then the count is increased or introduced to the list. 
                 if armedStatus == 'unarmed':
                     if race in unarmedRaceCounts:
                         unarmedRaceCounts[race] += 1
                     else:
                         unarmedRaceCounts[race] = 1
 
-# Calculate the proportion of unarmed shootings by race
+    # code to calculate the percentage of unarmed shootings according to the race
     unarmed_proportions = {}
     for race in raceCounts:
         unarmed_proportions[race] = (unarmedRaceCounts.get(race, 0) / raceCounts[race]) * 100
 
-# Sort the data by race for a clean line plot
+    #cleaning the data by sorting it
     sortedRaces = sorted(unarmed_proportions.keys())
     sortedPercentage = [unarmed_proportions[race] for race in sortedRaces]
 
-# Visualization: Line graph
+    # visualizing the data through a line graph to show corelation
     plt.figure(figsize=(10, 6))
     plt.plot(sortedRaces, sortedPercentage, marker='o', color='blue')
     plt.title('Proportion of Unarmed Shootings by Race')
@@ -118,12 +117,99 @@ def questionOne():
     plt.ylabel('Percentage of Unarmed Shootings')
     plt.grid(True)
     plt.show()
+    print("Total counts by race:", raceCounts)
+    print("Unarmed counts by race:", unarmedRaceCounts)
+    print("Unarmed proportions by race:", unarmed_proportions)
+
+
+
+
+
 
 def questionTwo():
-    print("Question Two")
+    
+    totalShootings = 0
+    cameraShootings = 0
+    noCameraShootings = 0
+
+
+    with open('fatal-police-shootings-data.csv', 'r') as file:
+        reader = csv.DictReader(file)
+    
+        for row in reader:
+            totalShootings += 1
+        
+        # Checking and increasing the counter by 1 every time a bodycam was used
+            if row['body_camera'].lower() == 'true':
+                cameraShootings += 1
+            else:
+                noCameraShootings += 1
+
+    #calculating the percentage of shootings with camera and with no camera
+    cameraShootingsProportion = (cameraShootings / totalShootings) * 100
+    noCameraShootingsProportion = (noCameraShootings / totalShootings) * 100
+
+    # the scope of the categories are limited so predefining it. 
+    categories = ['With Body Camera', 'Without Body Camera']
+    proportions = [cameraShootingsProportion, noCameraShootingsProportion]
+
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(categories, proportions, color=['green', 'red'], alpha=0.6)
+    plt.title('Proportion of Fatal Shootings by Body Camera Usage')
+    plt.xlabel('Body Camera Usage')
+    plt.ylabel('Percentage of Fatal Shootings')
+    plt.ylim(0, 100)
+    plt.show()
+    print(f"Percentage of Fatal Shootings With Body Camera: {cameraShootingsProportion:.2f}%")
+    print(f"Percentage of Fatal Shootings Without Body Camera: {noCameraShootingsProportion:.2f}%")
+
+
+
+
 
 def questionThree():
-    print("Question Three")
+    
+    totalShootings = 0
+    mentalIllnessShootings = 0
+    noMentalIllnessShootings = 0
+
+
+    with open('fatal-police-shootings-data.csv', 'r') as file:
+        reader = csv.DictReader(file)
+    
+        for row in reader:
+            totalShootings += 1
+        
+        # increading the counter by one everytime a shooting with mental illness was reported
+            if row['was_mental_illness_related'].lower() == 'true':
+                mentalIllnessShootings += 1
+            else:
+                noMentalIllnessShootings += 1
+
+    # Calculating the percentage of people with mental illness and without mental illness
+    mentalIllnessProportion = (mentalIllnessShootings / totalShootings) * 100
+    noMentalIllnessProportion = (noMentalIllnessShootings / totalShootings) * 100
+
+    # predefining the scope of the data 
+    labels = ['Mental Illness Reported', 'No Mental Illness Reported']
+    proportions = [mentalIllnessProportion, noMentalIllnessProportion]
+    colors = ['skyblue', 'lightcoral']
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(proportions, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    plt.title('Proportion of Police Shootings by Mental Illness Report')
+    plt.show()
+
+    # Using the statistics module to calculate the Variance and SD. 
+    variance = stats.variance(proportions)
+    std_deviation = stats.stdev(proportions)
+
+    print(f"Mental Illness Reported: {mentalIllnessProportion:.2f}%")
+    print(f"No Mental Illness Reported: {noMentalIllnessProportion:.2f}%")
+    print(f"Variance of percentage: {variance:.2f}")
+    print(f"Standard Deviation of percentage: {std_deviation:.2f}")
+
 
 
 if __name__ == "__main__":
