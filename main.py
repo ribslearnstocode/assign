@@ -7,43 +7,16 @@ Questions:
 3. How much does the presence of mental illness in a suspect influence the probability of police shootings?
 
 '''
+
 import csv
 import statistics as stats
 import matplotlib.pyplot as plt
+from questionAshked import confirmData
 
 def main():
-    # confirmData() this is the function to be called for printing the lists. 
+    # confirmData() the function which asks questions
     questionAsked()
 
-# function for printing out the relevant lists. 
-# def confirmData():
-#     print("The list which is supposed to be printed. ")
-#     unarmedRaceList= []
-#     bodyCameraList= []
-#     mentalIllnessList= []
-
-#     with open('fatal-police-shootings-data.csv', 'r') as file:
-#         header = file.readline().strip().split(',')
-    
-#         raceOnly = header.index('race')
-#         armedWith = header.index('armed_with')
-#         bodyCamera = header.index('body_camera')
-#         mentalIllness = header.index('was_mental_illness_related')
-
-#         for line in file:
-#             data = line.strip().split(',')
-
-#             if data[armedWith] == 'unarmed':
-#                 unarmedRaceList.append(data[raceOnly])
-
-#             bodyCameraList.append(data[bodyCamera])
-
-#             mentalIllnessList.append(data[mentalIllness])
-
-#         for i in range(len(unarmedRaceList)):
-#             print("Unarmed Race List:", unarmedRaceList[i])  
-#             print("Body Camera List:", bodyCameraList[i])
-#             print("Mental Illness List:", mentalIllnessList[i])
 
 
 def questionAsked():
@@ -101,13 +74,13 @@ def questionOne():
                         unarmedRaceCounts[race] = 1
 
     # code to calculate the percentage of unarmed shootings according to the race
-    unarmed_proportions = {}
+    unarmedPercentage = {}
     for race in raceCounts:
-        unarmed_proportions[race] = (unarmedRaceCounts.get(race, 0) / raceCounts[race]) * 100
+        unarmedPercentage[race] = (unarmedRaceCounts.get(race, 0) / raceCounts[race]) * 100
 
     #cleaning the data by sorting it
-    sortedRaces = sorted(unarmed_proportions.keys())
-    sortedPercentage = [unarmed_proportions[race] for race in sortedRaces]
+    sortedRaces = sorted(unarmedPercentage.keys())
+    sortedPercentage = [unarmedPercentage[race] for race in sortedRaces]
 
     # visualizing the data through a line graph to show corelation
     plt.figure(figsize=(10, 6))
@@ -119,7 +92,7 @@ def questionOne():
     plt.show()
     print("Total counts by race:", raceCounts)
     print("Unarmed counts by race:", unarmedRaceCounts)
-    print("Unarmed proportions by race:", unarmed_proportions)
+    print("Unarmed proportions by race:", unarmedPercentage)
 
 
 
@@ -203,12 +176,12 @@ def questionThree():
 
     # Using the statistics module to calculate the Variance and SD. 
     variance = stats.variance(proportions)
-    std_deviation = stats.stdev(proportions)
+    standardDeviation = stats.stdev(proportions)
 
     print(f"Mental Illness Reported: {mentalIllnessProportion:.2f}%")
     print(f"No Mental Illness Reported: {noMentalIllnessProportion:.2f}%")
     print(f"Variance of percentage: {variance:.2f}")
-    print(f"Standard Deviation of percentage: {std_deviation:.2f}")
+    print(f"Standard Deviation of percentage: {standardDeviation:.2f}")
 
 
 
